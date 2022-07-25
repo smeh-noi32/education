@@ -9,15 +9,21 @@
 typedef struct {        //Структура хранящая параметры персонажа
     float x, y;         //Координаты
     float width, height;//Размер
-    float vertSpeed;    //Скорость
+    float vertSpeed;    //Скорость по вертикали
     BOOL isFly;         //Нахождение в полете(Движение с вертикальной скоростью)
     char cType;         //Тип объектов
+    float horizSpeed;    //Скорость по горизонтали
 } TObject;
 
 char map[mapHeight][mapWidth+1];    //Массив содержащий игровое поле
 TObject mario;                      //Создание переменной для персонажа
 TObject *brick = NULL;                   //Создание переменной для препятствий 
+
 int brickLenght;                    //Переменная хранящая размер массива brick
+
+TObject *moving = NULL;
+int movingLenght;
+
 int level = 1;
 
 void clearMap(){                //Процедура заполненря карты значениями
@@ -50,6 +56,7 @@ void initObject (TObject *obj, float xPos, float yPos, float oWidth, float oHeig
     (*obj).height = oHeight;
     (*obj).vertSpeed = 0;
     (*obj).cType = inType;
+    (*obj).horizSpeed = 0.2;
 }
 
 BOOL isCollision(TObject o1, TObject o2);
@@ -77,6 +84,49 @@ void vertMoveObject(TObject *obj){      //Процедура пересчиты�
             
             break;
         }
+    }
+}
+
+void deleteMoving(int i){       //Процедура удаления движущегося объекта
+    movingLenght--;
+    moving[i] = moving[movingLenght];   //Помещение последнего элемента массива на место удаляемого
+    moving = realloc(moving, sizeof(*moving) * movingLenght);   //После чего усекаем массив на одну ячейку
+}
+
+void MarioCollision(){      //Процедура проверяет Марио на столкновение с движущимися объектами
+    for (int i = 0; i < movingLenght; i++) {
+        if (isCollision( mario, moving[i])){        //Если Марио столкнулся с движущимся объектом, то уровень запускается заного
+            if( (mario.isFly == TRUE)       //Если марио летит
+                && (mario.vertSpeed > 0)    //И летит вниз
+                && (mario.y + mario.height < moving[i].y + moving[i].height * 0.5)  //И ноги марио должны находится выше половины роста врага
+               ) {
+                    deleteMoving(i);    //Удаляем объект
+                    i--;
+                    continue;   //Начинаем новую итерацию цикла
+            }
+            else           //Иначе враг уничтожает Марио и уровень начинается заного
+                createLevel(level);
+        }
+    }
+}
+
+void horizonMoveObject(TObject *obj){       //Процедура горизонтального перемещения объектов
+    
+    obj[0].x += obj[0].horizSpeed;
+
+    for (int i = 0; i < brickLenght; i++) {     //Проверка на столкновение со стенами, в случае столкновения разворот в обратную сторону
+        if (isCollision(obj[0], brick[i])){
+            obj[0].x -= obj[0].horizSpeed;
+            obj[0].horizSpeed = -obj[0].horizSpeed;
+            return;
+        }
+    }
+    
+    TObject tmp = *obj;         //Создание копии объекта
+    vertMoveObject(&tmp);       //Применение к копии силы тяжести
+    if (tmp.isFly == TRUE){     //Если объект в полете
+        obj[0].x -= obj[0].horizSpeed;      //Отменяем текущщее перемещение
+        obj[0].horizSpeed = -obj[0].horizSpeed;     //и идем в обратную сторону
     }
 }
 
@@ -119,6 +169,10 @@ void horizonMoveMap(float dx){      //Функция перемещения ка
     for (int i = 0; i < brickLenght; i++) {
         brick[i].x += dx;
     }
+
+    for (int i = 0; i < movingLenght; i++) {
+        moving[i].x += dx;
+    }
 }
 
 BOOL isCollision(TObject o1, TObject o2){               //Функция проверки на столкновения двух объектов
@@ -129,8 +183,8 @@ BOOL isCollision(TObject o1, TObject o2){               //Функция про�
 void createLevel(int lvl){             //Процедура создания уровней
     initObject(&mario, 39, 10, 3 ,3, '@');
 
-    brickLenght = 6;
     if (lvl == 1){
+        brickLenght = 6;
         brick = realloc(brick, sizeof(*brick) * brickLenght);
         initObject(brick+0, 20, 20, 40, 5, '#');
         initObject(brick+1, 60, 15, 10, 10, '#');
@@ -138,9 +192,13 @@ void createLevel(int lvl){             //Процедура создания у�
         initObject(brick+3, 120, 15, 10, 10, '#');
         initObject(brick+4, 150, 20, 40, 5, '#');
         initObject(brick+5, 210, 15, 10, 10, '+');
+        movingLenght = 1;
+        moving = realloc(moving, sizeof(*moving) * movingLenght);
+        initObject(moving+0, 25, 10, 3, 2, 'o');
     }
 
     if (lvl == 2){
+        brickLenght = 4;
         brick = realloc(brick, sizeof(*brick) * brickLenght);
         initObject(brick+0, 20, 20, 40, 5, '#');
         initObject(brick+1, 80, 20, 15, 5, '#');
@@ -163,8 +221,20 @@ int main(){
         if (mario.y > mapHeight) createLevel(level);     //Проверка нахождения марио внутри игрового поля, иначе уровень начинается заного 
 
         vertMoveObject(&mario);
+        MarioCollision();
+
         for (int i =0; i< brickLenght; i++){
             PutObjectOnMap(brick[i]);
+        }
+        for (int i =0; i< movingLenght; i++){
+            vertMoveObject(moving + i);
+            horizonMoveObject(moving + i);
+            /*if (moving[i].y > mapHeight) {
+                deleteMoving(i);    //Удаляем объект
+                i--;
+                continue;   //Начинаем новую итерацию цикла
+            }*/
+            PutObjectOnMap(moving[i]);
         }
         PutObjectOnMap(mario);
 
