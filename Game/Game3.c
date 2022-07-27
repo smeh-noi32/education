@@ -25,6 +25,8 @@ TObject *moving = NULL;
 int movingLenght;
 
 int level = 1;
+int score;
+int maxLvl;
 
 void clearMap(){                //Процедура заполненря карты значениями
     for (int i = 0; i < mapWidth; i++) {    //Заполнение первой строки игрового поля
@@ -61,6 +63,13 @@ void initObject (TObject *obj, float xPos, float yPos, float oWidth, float oHeig
 
 BOOL isCollision(TObject o1, TObject o2);
 void createLevel(int lvl);
+TObject *getNewMoving();
+
+void playerDead(){
+    system("color 4F");
+    Sleep(500);
+    createLevel(level);
+}
 
 void vertMoveObject(TObject *obj){      //Процедура пересчитывающая скорость и изменяющая её
     (*obj).isFly = TRUE;
@@ -69,17 +78,31 @@ void vertMoveObject(TObject *obj){      //Процедура пересчиты�
 
     for (int i = 0; i < brickLenght; i++) {
         if (isCollision( *obj, brick[i])){      //Проерка на столкновение двух объектов
+
+            if (obj[0].vertSpeed > 0) {
+                obj[0].isFly = FALSE;
+            }
+
+            if ( (brick[i].cType == '?') && (obj[0].vertSpeed < 0) && (obj == &mario) ) {       //В случае столкновения с кирпичиком типа '$', и двигались снизу вверх, и это Марио
+                brick[i].cType = '-';       //Меняем тип кирпичика
+                initObject(getNewMoving(), brick[i].x, brick[i].y-3, 3, 2, '$');        //И добавляем движущийся объект поверх кирпичика
+                moving[movingLenght - 1].vertSpeed = -0.7;
+            }
+            
+            
             (*obj).y -= (*obj).vertSpeed;       //Возврат назад
             (*obj).vertSpeed = 0;               //Прекращение движения
             (*obj).isFly = FALSE;               //Если марио куда-то приземлился, он теряет вертикальную скорость
+
             if (brick[i].cType == '+') {
                 level++;
-                if (level > 2) {
+                if (level > maxLvl) {
                     level = 1;
                 }
                 
+                system("color 2F");     //Окрашиваем все в зеленый цвет
+                Sleep(500);             //на полсекунды
                 createLevel(level);
-                Sleep(1000);
             }
             
             break;
@@ -96,16 +119,27 @@ void deleteMoving(int i){       //Процедура удаления движу
 void MarioCollision(){      //Процедура проверяет Марио на столкновение с движущимися объектами
     for (int i = 0; i < movingLenght; i++) {
         if (isCollision( mario, moving[i])){        //Если Марио столкнулся с движущимся объектом, то уровень запускается заного
-            if( (mario.isFly == TRUE)       //Если марио летит
-                && (mario.vertSpeed > 0)    //И летит вниз
-                && (mario.y + mario.height < moving[i].y + moving[i].height * 0.5)  //И ноги марио должны находится выше половины роста врага
-               ) {
-                    deleteMoving(i);    //Удаляем объект
-                    i--;
-                    continue;   //Начинаем новую итерацию цикла
+            
+            if (moving[i].cType == 'o'){
+                if( (mario.isFly == TRUE)       //Если марио летит
+                    && (mario.vertSpeed > 0)    //И летит вниз
+                    && (mario.y + mario.height < moving[i].y + moving[i].height * 0.5)  //И ноги марио должны находится выше половины роста врага
+                ) {
+                        score += 50;
+                        deleteMoving(i);    //Удаляем объект
+                        i--;
+                        continue;   //Начинаем новую итерацию цикла
+                }
+                else           //Иначе враг уничтожает Марио и уровень начинается заного
+                    playerDead();
             }
-            else           //Иначе враг уничтожает Марио и уровень начинается заного
-                createLevel(level);
+
+            if (moving[i].cType == '$'){
+                score += 100;
+                deleteMoving(i);    //Удаляем объект
+                i--;
+                continue;   //Начинаем новую итерацию цикла
+            }
         }
     }
 }
@@ -122,11 +156,13 @@ void horizonMoveObject(TObject *obj){       //Процедура горизон�
         }
     }
     
-    TObject tmp = *obj;         //Создание копии объекта
-    vertMoveObject(&tmp);       //Применение к копии силы тяжести
-    if (tmp.isFly == TRUE){     //Если объект в полете
-        obj[0].x -= obj[0].horizSpeed;      //Отменяем текущщее перемещение
-        obj[0].horizSpeed = -obj[0].horizSpeed;     //и идем в обратную сторону
+    if (obj[0].cType == 'o'){
+        TObject tmp = *obj;         //Создание копии объекта
+        vertMoveObject(&tmp);       //Применение к копии силы тяжести
+        if (tmp.isFly == TRUE){     //Если объект в полете
+            obj[0].x -= obj[0].horizSpeed;      //Отменяем текущщее перемещение
+            obj[0].horizSpeed = -obj[0].horizSpeed;     //и идем в обратную сторону
+        }
     }
 }
 
@@ -180,31 +216,88 @@ BOOL isCollision(TObject o1, TObject o2){               //Функция про�
             ((o1.y + o1.height) > o2.y) && (o1.y <(o2.y + o2.height));
 }
 
+TObject *getNewBrick(){     //Функция добавляет новый объект в массив и возвращает его указатель
+    brickLenght++;          //Создание нового жлемента массива brick
+    brick = realloc( brick, sizeof(*brick) * brickLenght);       //Выделение ему памяти
+    return brick + brickLenght -1;      //Возврат указателя на новый элемент массива
+}
+
+TObject *getNewMoving(){     //Функция добавляет новый объект в массив и возвращает его указатель
+    movingLenght++;          //Создание нового элемента массива moving
+    moving = realloc( moving, sizeof(*moving) * movingLenght);       //Выделение ему памяти
+    return moving + movingLenght -1;      //Возврат указателя на новый элемент массива
+}
+
+void putScoreOnMap(){       //Процедура подсчёта и вывода счета на экран
+    char c[30];
+    sprintf(c, "Score: %d", score);     //Сохранаяем счёт в виде строки
+    int len = strlen(c);
+    for (int i = 0; i < len; i++) {     //Посимвольно заменяем символы на карте, на символы строки
+        map[1][i+5] = c[i];
+    }
+    
+}
+
 void createLevel(int lvl){             //Процедура создания уровней
+    
+    system("color 0F");
+    
+    brickLenght = 0;
+    brick = realloc( brick, 0);  
+    movingLenght = 0;
+    moving = realloc( moving, 0); 
+
+    score = 0; 
+
     initObject(&mario, 39, 10, 3 ,3, '@');
 
     if (lvl == 1){
-        brickLenght = 6;
-        brick = realloc(brick, sizeof(*brick) * brickLenght);
-        initObject(brick+0, 20, 20, 40, 5, '#');
-        initObject(brick+1, 60, 15, 10, 10, '#');
-        initObject(brick+2, 80, 20, 20, 5, '#');
-        initObject(brick+3, 120, 15, 10, 10, '#');
-        initObject(brick+4, 150, 20, 40, 5, '#');
-        initObject(brick+5, 210, 15, 10, 10, '+');
-        movingLenght = 1;
-        moving = realloc(moving, sizeof(*moving) * movingLenght);
-        initObject(moving+0, 25, 10, 3, 2, 'o');
+        initObject(getNewBrick(), 20, 20, 40, 5, '#');
+        initObject(getNewBrick(), 60, 15, 40, 10, '#');
+        initObject(getNewBrick(), 100, 20, 20, 5, '#');
+        initObject(getNewBrick(), 120, 15, 10, 10, '#');
+        initObject(getNewBrick(), 150, 20, 40, 5, '#');
+        initObject(getNewBrick(), 210, 15, 10, 10, '+');
+            initObject(getNewBrick(), 30, 10, 5, 3, '?');
+            initObject(getNewBrick(), 50, 10, 5, 3, '?');
+            initObject(getNewBrick(), 60, 5, 10, 3, '-');
+            initObject(getNewBrick(), 70, 5, 5, 3, '?');
+            initObject(getNewBrick(), 75, 5, 5, 3, '-');
+            initObject(getNewBrick(), 80, 5, 5, 3, '?');
+            initObject(getNewBrick(), 85, 5, 10, 3, '-');
     }
 
     if (lvl == 2){
-        brickLenght = 4;
-        brick = realloc(brick, sizeof(*brick) * brickLenght);
-        initObject(brick+0, 20, 20, 40, 5, '#');
-        initObject(brick+1, 80, 20, 15, 5, '#');
-        initObject(brick+2, 120, 15, 15, 10, '#');
-        initObject(brick+3, 160, 10, 15, 15, '+');
+        initObject(getNewBrick(), 20, 20, 40, 5, '#');
+        initObject(getNewBrick(), 60, 15, 10, 10, '#');
+        initObject(getNewBrick(), 80, 20, 20, 5, '#');
+        initObject(getNewBrick(), 120, 15, 10, 10, '#');
+        initObject(getNewBrick(), 150, 20, 40, 5, '#');
+        initObject(getNewBrick(), 210, 15, 10, 10, '+');
+
+        initObject(getNewMoving(), 25, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 80, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 65, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 120, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 160, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 175, 10, 3, 2, 'o');
     }
+
+    if (lvl == 3){
+        initObject(getNewBrick(), 40, 20, 40, 5, '#');
+        initObject(getNewBrick(), 80, 20, 15, 5, '#');
+        initObject(getNewBrick(), 120, 15, 15, 10, '#');
+        initObject(getNewBrick(), 160, 10, 15, 15, '+');
+ 
+        initObject(getNewMoving(), 15, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 50, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 80, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 90, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 120, 10, 3, 2, 'o');
+        initObject(getNewMoving(), 130, 10, 3, 2, 'o');
+    }
+
+    maxLvl = 3;
 }
 
 int main(){
@@ -218,7 +311,7 @@ int main(){
         if (GetKeyState('A') < 0) horizonMoveMap(1);        //При нажатии клавиши 'A' или 'D' Карта перемещается
         if (GetKeyState('D') < 0) horizonMoveMap(-1);       // влево или вправо относительно марио
 
-        if (mario.y > mapHeight) createLevel(level);     //Проверка нахождения марио внутри игрового поля, иначе уровень начинается заного 
+        if (mario.y > mapHeight) playerDead();     //Проверка нахождения марио внутри игрового поля, иначе уровень начинается заного 
 
         vertMoveObject(&mario);
         MarioCollision();
@@ -229,14 +322,15 @@ int main(){
         for (int i =0; i< movingLenght; i++){
             vertMoveObject(moving + i);
             horizonMoveObject(moving + i);
-            /*if (moving[i].y > mapHeight) {
+            if (moving[i].y > mapHeight) {
                 deleteMoving(i);    //Удаляем объект
                 i--;
                 continue;   //Начинаем новую итерацию цикла
-            }*/
+            }
             PutObjectOnMap(moving[i]);
         }
         PutObjectOnMap(mario);
+        putScoreOnMap();
 
         setCur(0,0);
         showMap();
