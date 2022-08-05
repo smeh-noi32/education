@@ -10,11 +10,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 
 #define MasLenght 10
 
+float n, arr[MasLenght+1];
+char arr1[MasLenght+1][MasLenght];
+
+typedef struct {
+    char Name[20];
+    int height;
+} Params;
+
+
 void firstPoint(){
-    float n, arr[MasLenght+1];
+    printf("First task\n");
+
     srand(time(NULL));
     for (int i=0; i <MasLenght; i++){
         n = (rand() % 100);
@@ -24,7 +35,8 @@ void firstPoint(){
 }
 
 void secondPoint(){
-    char arr1[MasLenght+1][MasLenght];
+    printf("\nSecond task\n");
+
     int rn;
     srand(time(NULL));
     for (int i=0; i <MasLenght; i++){
@@ -42,11 +54,35 @@ void secondPoint(){
     }
 }
 
+void structPoint(Params *p){
+    printf("\nThird task\nEnter Name: ");
+    scanf("%s", p->Name);
+    printf("Enter Height: ");
+    scanf("%d", &p->height); 
+
+    printf("Name: %s \nHeight: %d\n\n", p->Name, p->height);
+}
+
+void endPoint(Params *pp){
+    printf("Recent tasks\n");
+
+    pp[MasLenght];
+    for (int i = 0; i < MasLenght; i++) {
+        strcpy(pp[i].Name, arr1[i]);
+        pp[i].height = arr[i];
+        printf("Name: %s Height: %d\n", pp[i].Name, (int)round(pp[i].height));
+    }
+    
+}
+
 int main() {
 
+    Params *Pms;
+    
     firstPoint();
     secondPoint();
-
+    structPoint(&Pms);
+    endPoint(&Pms);
 
     system("pause");
     return 0;
