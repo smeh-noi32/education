@@ -33,13 +33,14 @@ int main(){
     int d;
     float a;
 
-    filingArr();
+    /*filingArr();
 
     f = fopen("001.txt", "w");
         for (int i = 0; i < MasLenght; i++) {
             fprintf(f, "%s\n", arr1[i]);
         }
     fclose(f);
+    */
 
     f = fopen("001.txt", "r");
     if (f == NULL)
