@@ -15,9 +15,10 @@ typedef struct {
     int x, y, z, pointNum;
 } intStruct;
 
-void displaying(FILE *f, intStruct *iS){
+void displaying(FILE *f, intStruct *iS){        //Фунуция считывания и отображения переменных из файла
     
     int g, h, j;
+    char v[20], q[20], e[20];
     
     if (iS->pointNum == 1){
         f = fopen("001.txt", "r");
@@ -45,6 +46,21 @@ void displaying(FILE *f, intStruct *iS){
             printf("%d\n", g);
             printf("%d\n", h);
             printf("%d\n", j);
+        }
+        fclose(f);
+    }
+
+    if (iS->pointNum == 3){
+        f = fopen("003.txt", "r");
+        if (f == NULL)
+            printf("fopen read error");
+        else {
+            fscanf(f, "%s", v);
+            fscanf(f, "%s", q);
+            fscanf(f, "%s", e);
+            printf("%s\n", v);
+            printf("%s\n", q);
+            printf("%s\n", e);
         }
         fclose(f);
     }
@@ -81,15 +97,40 @@ void secondPoint(FILE *f, intStruct *iS){
     system("pause");
 };
 
+void thirdPoint(FILE *f, intStruct *iS){
+    iS->pointNum = 3;
+    int p;
+    float l;
+    char m[20];
+
+    printf("Enter integer: ");
+    scanf("%d", &p);
+    printf("Enter float: ");
+    scanf("%f", &l);
+    printf("Enter char: ");
+    scanf("%s", m);
+    
+    f = fopen("003.txt", "w");
+        fprintf(f, "%d\n", p);
+        fprintf(f, "%g\n", l);
+        fprintf(f, "%s\n", m);
+    fclose(f);
+
+    displaying(f, iS);
+
+    system("pause");
+};
+
 int main(){
 
     FILE *f;
     intStruct iS;
 
-    //firstPoint(f, &iS);
+    firstPoint(f, &iS);
 
     secondPoint(f, &iS);
 
+    thirdPoint(f, &iS);
 
     system("pause");
     return 0;
