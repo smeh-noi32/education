@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
 #include <Windows.h>
 
 #define _USE_MATH_DEFINES
@@ -24,6 +23,7 @@ typedef struct { //Создание структуры для мячика
 } TBall;
 
 char mas[height][width+1]; //Объявление массива игрового поля
+char c[1];
 TRacket racket;
 TBall ball;
 int hitCnt = 0;
@@ -144,7 +144,7 @@ void setcur(int x, int y) {     //Функция, переносящая кур�
 }
 
 int main() {
-    char c;
+
     BOOL run = FALSE;   //проверка запуска мячика (False = мячик привязан к ракетке. True = мячик двигается автоматически)
     initRacket();
     initBall();
