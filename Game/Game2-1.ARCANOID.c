@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
 #include <Windows.h>
 #include <time.h>
 
@@ -38,11 +37,9 @@ void initBall(){    //Создание мячика
     ball.speed = 0.5;
 }
 
-
 void putBall(){     //Помещение мячика в игровое поле
     mas[ball.iy][ball.ix] = '*';
 }
-
 
 void moveBall(float x, float y){        //Функция перемещения мячика в игровом поле
     ball.x = x;
@@ -50,7 +47,6 @@ void moveBall(float x, float y){        //Функция перемещения 
     ball.ix = (int)round(ball.x);
     ball.iy = (int)round(ball.y);
 }
-
 
 void autoMoveBall (){    //Изменяет координаты X и Y мячика в зависимости от угла и скорости
     if(ball.alfa < 0) ball.alfa += M_PI*2;
