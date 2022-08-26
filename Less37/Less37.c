@@ -9,114 +9,117 @@
 #include <stdlib.h>
 #include <string.h>
 
-int a = 5, b = 6, c = 7;
+int a = 5, b = 6, c = 7, pointNum;
 
 typedef struct {
-    int x, y, z, pointNum;
+    int x, y, z;
 } intStruct;
 
-void displaying(FILE *f, intStruct *iS){        //Фунуция считывания и отображения переменных из файла
+typedef struct{
+    int u;
+    float o;
+    char n[20];
+} Third;
+
+void displaying(FILE *f){        //Фунуция считывания и отображения переменных из файла
     
     int g, h, j;
     char v[20], q[20], e[20];
+    float k;
     
-    if (iS->pointNum == 1){
+    if (pointNum == 1){
         f = fopen("001.txt", "r");
         if (f == NULL)
             printf("fopen read error");
         else {
-            fscanf(f, "%d", &g);
-            fscanf(f, "%d", &h);
-            fscanf(f, "%d", &j);
-            printf("%d\n", g);
-            printf("%d\n", h);
-            printf("%d\n", j);
+            fread(&g, sizeof(g), 1, f);
+            fread(&h, sizeof(h), 1, f);
+            fread(&j, sizeof(j), 1, f);
         }
         fclose(f);
+
+        printf("%d  \n%d  \n%d\n", g, h, j);
+
     }
 
-    if (iS->pointNum == 2){
+    if (pointNum == 2){
         f = fopen("002.txt", "r");
         if (f == NULL)
             printf("fopen read error");
         else {
-            fscanf(f, "%d", &g);
-            fscanf(f, "%d", &h);
-            fscanf(f, "%d", &j);
-            printf("%d\n", g);
-            printf("%d\n", h);
-            printf("%d\n", j);
+            fread(&g, sizeof(g), 1, f);
+            fread(&h, sizeof(h), 1, f);
+            fread(&j, sizeof(j), 1, f);
         }
         fclose(f);
+
+        printf("%d  \n%d  \n%d\n", g, h, j);
+        
     }
 
-    if (iS->pointNum == 3){
+    if (pointNum == 3){
         f = fopen("003.txt", "r");
         if (f == NULL)
             printf("fopen read error");
         else {
-            fscanf(f, "%s", v);
-            fscanf(f, "%s", q);
-            fscanf(f, "%s", e);
-            printf("%s\n", v);
-            printf("%s\n", q);
-            printf("%s\n", e);
+            fread(&g, sizeof(g), 1, f);
+            fread(&k, sizeof(k), 1, f);
+            fread(e, sizeof(e), 1, f);
         }
         fclose(f);
+
+        itoa(g, v, 10);
+
+        printf("%s\n%g\n%s\n", v, k, e);
+
     }
 }
 
-void firstPoint(FILE *f, intStruct *iS){
-    iS->pointNum = 1;
+void firstPoint(FILE *f){
+    pointNum = 1;
     f = fopen("001.txt", "w");
-        fprintf(f, "%d\n", a);
-        fprintf(f, "%d\n", b);
-        fprintf(f, "%d\n", c);
+        fwrite(&a, sizeof(a), 1, f);
+        fwrite(&b, sizeof(b), 1, f);
+        fwrite(&c, sizeof(c), 1, f);
     fclose(f);
     
-    displaying(f, iS);
+    displaying(f);
 
     system("pause");
 }
 
-void secondPoint(FILE *f, intStruct *iS){
-    iS->x = a + 2;
-    iS->y = b + 2;
-    iS->z = c + 2;
-    iS->pointNum = 2;
+void secondPoint(FILE *f){
+    intStruct iS = {a + 2, b + 2, c + 2};
+
+    pointNum = 2;
     f = fopen("002.txt", "w");
-        fprintf(f, "%d\n", iS->x);
-        fprintf(f, "%d\n", iS->y);
-        fprintf(f, "%d\n", iS->z);
+        fwrite(&iS, sizeof(iS), 1, f);
     fclose(f);
 
     //system("cls");
 
-    displaying(f, iS);
+    displaying(f);
 
     system("pause");
 };
 
-void thirdPoint(FILE *f, intStruct *iS){
-    iS->pointNum = 3;
-    int p;
-    float l;
-    char m[20];
+void thirdPoint(FILE *f){
+    pointNum = 3;
+
+    Third anyType;
 
     printf("Enter integer: ");
-    scanf("%d", &p);
+    scanf("%d", &anyType.u);
     printf("Enter float: ");
-    scanf("%f", &l);
+    scanf("%f", &anyType.o);
     printf("Enter char: ");
-    scanf("%s", m);
+    scanf("%s", anyType.n);
     
     f = fopen("003.txt", "w");
-        fprintf(f, "%d\n", p);
-        fprintf(f, "%g\n", l);
-        fprintf(f, "%s\n", m);
+        fwrite(&anyType, sizeof(anyType), 1, f);
     fclose(f);
 
-    displaying(f, iS);
+    displaying(f);
 
     system("pause");
 };
@@ -126,11 +129,11 @@ int main(){
     FILE *f;
     intStruct iS;
 
-    firstPoint(f, &iS);
+    //firstPoint(f);
 
-    secondPoint(f, &iS);
+    //secondPoint(f);
 
-    thirdPoint(f, &iS);
+    thirdPoint(f);
 
     system("pause");
     return 0;
