@@ -21,10 +21,15 @@ typedef struct{
     char n[20];
 } Third;
 
+typedef struct {
+    char alfa[20];
+    intStruct beta;
+} fourth;
+
 void displaying(FILE *f){        //Фунуция считывания и отображения переменных из файла
     
     int g, h, j;
-    char v[20], q[20], e[20];
+    char v[20], q[20], e[20], gamma[20];
     float k;
     
     if (pointNum == 1){
@@ -53,7 +58,7 @@ void displaying(FILE *f){        //Фунуция считывания и ото
         }
         fclose(f);
 
-        printf("%d  \n%d  \n%d\n", g, h, j);
+        printf("\n%d  \n%d  \n%d\n", g, h, j);
         
     }
 
@@ -70,7 +75,28 @@ void displaying(FILE *f){        //Фунуция считывания и ото
 
         itoa(g, v, 10);
 
-        printf("%s\n%g\n%s\n", v, k, e);
+        printf("\n%s\n%g\n%s\n", v, k, e);
+
+    }
+
+    if (pointNum == 4){
+
+        f = fopen("004.txt", "r");
+        if (f == NULL)
+            printf("fopen read error");
+        else {
+            fread(gamma, sizeof(gamma), 1, f);
+            fread(&g, sizeof(g), 1, f);
+            fread(&h, sizeof(h), 1, f);
+            fread(&j, sizeof(j), 1, f);
+        }
+        fclose(f);
+
+        itoa(g, v, 10);
+        itoa(h, q, 10);
+        itoa(j, e, 10);
+
+        printf("\n%s\n%s\n%s\n%s\n", gamma, v, q, e);
 
     }
 }
@@ -96,8 +122,6 @@ void secondPoint(FILE *f){
         fwrite(&iS, sizeof(iS), 1, f);
     fclose(f);
 
-    //system("cls");
-
     displaying(f);
 
     system("pause");
@@ -108,7 +132,7 @@ void thirdPoint(FILE *f){
 
     Third anyType;
 
-    printf("Enter integer: ");
+    printf("\nEnter integer: ");
     scanf("%d", &anyType.u);
     printf("Enter float: ");
     scanf("%f", &anyType.o);
@@ -124,17 +148,40 @@ void thirdPoint(FILE *f){
     system("pause");
 };
 
+void fourthPoint (FILE *f) {
+    pointNum = 4;
+
+    fourth call4;
+
+    call4.beta.x = a + 4;
+    call4.beta.y = b + 4;
+    call4.beta.z = c + 4;
+
+    printf("\nEnter char: ");
+    scanf("%s", call4.alfa);
+    
+    f = fopen("004.txt", "w");
+        fwrite(&call4, sizeof(call4), 1, f);
+    fclose(f);
+
+    displaying(f);
+
+    system("pause");
+};
+
 int main(){
 
     FILE *f;
     intStruct iS;
 
-    //firstPoint(f);
+    firstPoint(f);
 
-    //secondPoint(f);
+    secondPoint(f);
 
     thirdPoint(f);
 
+    fourthPoint(f);
+    
     system("pause");
     return 0;
 }
