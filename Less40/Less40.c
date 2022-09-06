@@ -9,13 +9,12 @@
 
 #define name "01.txt"
 
-int integ[5] = { 5, 6, 8, 1, 9};
+char integ[5] = "56819";
 char strin[10] = "";
 
 void write(FILE *f){
     f = fopen( name, "w");
-        for (int i = 0; i < 5; i++)
-            fprintf(f, "%d\n", integ[i]);
+        fprintf(f, integ);
     fclose(f);
 }
 
@@ -27,8 +26,7 @@ void read(FILE *f){
 
 void writeBinary(FILE *f){
     f = fopen( name, "wb");
-        for (int i = 0; i < 5; i++)
-            fprintf(f, "%d\n", integ[i]);
+        fprintf(f, integ);
     fclose(f);
 }
 
@@ -42,12 +40,12 @@ int main(){
 
     FILE *f;
 
-    write(f);
+    //write(f);
 
     read(f);
 
     for (int i = 0; i < 10; i++)
-        printf("%c\n", strin[i]);
+        printf("%d\n", strin[i]);
 
     system("pause");
 
