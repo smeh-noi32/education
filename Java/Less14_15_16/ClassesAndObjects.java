@@ -1,4 +1,4 @@
-package Less14_15;
+package Less14_15_16;
 
 public class ClassesAndObjects {
     public static void main(String[] args) {
@@ -17,6 +17,12 @@ public class ClassesAndObjects {
         pers1.speak();
         pers2.sayHello();
         pers2.speak();
+
+        System.out.println();
+        int years1 = pers1.calculateYersToRetirement();
+        int years2 = pers2.calculateYersToRetirement();
+        System.out.println(pers1.Name + " будет работать до пенсии " + years1 + " лет");
+        System.out.println(pers2.Name + " будет работать до пенсии " + years2 + " лет");
     }
 }
 
@@ -30,5 +36,10 @@ class Person{
 
     void sayHello(){
         System.out.println("Привет, ");
+    }
+
+    int calculateYersToRetirement() {
+        int years = 65 - Age;       //Количество лет, оставшихся до пенсии
+        return years;
     }
 }
