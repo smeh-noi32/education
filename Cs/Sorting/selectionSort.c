@@ -11,9 +11,11 @@ int main () {
         if (size[i] >= 2) {
             for (int j = 0; j < size[i]; j++){
                 min = j;
-                for (int k = j + 1; k < size[i]; k++)
-                    if (arr[i][min] > arr[i][k])
+                for (int k = j + 1; k < size[i]; k++){
+                    if (arr[i][min] > arr[i][k]){
                         min = k;
+                    }
+                }
                 buf = arr[i][min];
                 arr[i][min] = arr[i][j];
                 arr[i][j] = buf;
