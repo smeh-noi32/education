@@ -2,39 +2,35 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#include "./Headers/arr.h"
+
 int main () {
-    int buf, max = 0, a[] = {9, 5, 0, 6, 7, 2, 8, 4, 1, 3};
-    int length = sizeof(a)/sizeof(a[0]);
-    bool sort;
+    printArr();
 
-    printf("Source: ");
-    for (int i = 0; i < 10; i++) {
-        printf(" %d,", a[i]);
-    }
-    printf("\n");
-
-    while (sort == false) {
-        sort = true;
-        for (int i = 0; i < length - 1 - max; i++) {
-            //printf("a[%d] = %d, a[%d] = %d\n", i, a[i], (i+1), a[i+1]);
-            if (a[i] > a[i+1]) {
-                buf = a[i];
-                a[i] = a[i+1];
-                a[i+1] = buf;
-                sort = false;
-            }
-            //printf("a[%d] = %d, a[%d] = %d\n", i, a[i], (i+1), a[i+1]);
-        }
-        max++;
-    }
-
-    printf("Result: ");
-    for (int i = 0; i < 10; i++) {
-        printf(" %d,", a[i]);
-    }
-    printf("\n");
     
+    for (int i = 0; i < arrCout; i++) {
+        if (size[i] >= 2) {
+            int stop = size[i] - 1;
+            max=0;
+            sort = false;
+        
+            while (sort == false) {
+                sort = true;
+                for (int j = 0; j < stop - max; j++) {
+                    if (arr[i][j] > arr[i][j+1]) {
+                        buf = arr[i][j];
+                        arr[i][j] = arr[i][j+1];
+                        arr[i][j+1] = buf;
+                        sort = false;
+                    }
+                }
+                max++;
+            }
+        }
+    }
 
-    system("pause");
-    return 0;    
+    printf("Result:\n");
+    printArr();
+
+    return 0;
 }

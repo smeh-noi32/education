@@ -6,39 +6,36 @@
 
 int main () {
     
-    for (int i = 0; i < length; i++) {
-        printf(" %d,", a[i]);
-    }
-    printf("\n");
+    printArr();
 
-    int delta = length;
+    for (int i = 0; i < arrCout; i++) {
+        if (size[i] >= 2) {
+            int delta = size[i];
 
-    sort = false;
+            sort = false;
 
-    while (!sort || delta !=1) {
-        if (delta > 1) {
-            delta = delta * 10 / 13;        // Эквивалент delta/1.3
-        }
-        else 
-            delta = 1;
-        
-        sort = true;
-        for (int i = delta; i < length; i++) {
-            if (a[i-delta] > a[i]){
-                buf = a[i];
-                a[i] = a[i - delta];
-                a[i - delta] = buf;
-                sort = false;
+            while (!sort || delta != 1) {
+                if (delta > 1) {
+                    delta = delta * 10 / 13;        // Эквивалент delta/1.3
+                }
+                else 
+                    delta = 1;
+                
+                sort = true;
+                for (int j = delta; j < size[i]; j++) {
+                    if (arr[i][j-delta] > arr[i][j]){
+                        buf = arr[i][j];
+                        arr[i][j] = arr[i][j - delta];
+                        arr[i][j - delta] = buf;
+                        sort = false;
+                    }
+                }  
             }
         }
-        
     }
     
-    for (int i = 0; i < length; i++) {
-        printf(" %d,", a[i]);
-    }
-    printf("\n");
+    printf("Result:\n");
+    printArr();
     
-    system("pause");
     return 0;
 }
