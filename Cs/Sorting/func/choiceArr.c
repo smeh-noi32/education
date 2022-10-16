@@ -7,17 +7,10 @@ int choiceArr (){
     printf("(1 - yes, 0 - no): ");
     while (!input) {
         scanf("%s", stringTMP);
-        //printf("%s\n", arrTypeTMP);
-        
         if (stringTMP[0] == '0' || stringTMP[0] == '1'){
             input = true;
         }
     }
     
     arrType = atoi(stringTMP);
-    return arrType;
-    /*
-    //scanf_s("%s", arrTypeTMP);
-    printf("%d\n", arrType);
-    system("pause");*/
 }

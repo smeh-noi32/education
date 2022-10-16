@@ -1,6 +1,6 @@
 #include "../Headers/arr.h"
 
-void selectionFunc (int *arrF, int vol) {
+int selectionFunc (int *arrF, int vol) {
     if (vol >=2){ 
         for (int i = 0; i < vol; i++) {
             min = i;

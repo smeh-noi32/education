@@ -3,9 +3,9 @@
 
 #include <stdbool.h>
 
-int buf = 0, min = 0, max = 0;
+int buf, min = 0, max = 0;
 bool sort, input;
-int N, arrType, Method;
+int arrType, Method;
 char stringTMP[20];
 
 #define arrCout 6
@@ -19,20 +19,21 @@ int arr[arrCout][10] = {{},
 
 int size[] = {0, 1, 6, 7, 10, 10};
 
-void printStart ();
 void printArr ();
 int choiceArr ();
-int enterArr ();
+int enterARR ();
 int choiceMethod ();
+void switchMethod (int *arrF, int vol);
 int bubbleFunc (int *arrF, int vol);
 int shakeFunc (int *arrF, int vol);
 int insertionFunc (int *arrF, int vol);
 int combFunc (int *arrF, int vol);
-void selectionFunc (int *arrF, int vol);
+int selectionFunc (int *arrF, int vol);
 
 #include "../func/choiceArr.c"
 #include "../func/choiceMethod.c"
-#include "../func/enterArr.c"
+#include "../func/switchMethod.c"
+#include "../func/enterARR.c"
 #include "../func/printArr.c"
 #include "../func/bubbleFunc.c"
 #include "../func/shakeFunc.c"

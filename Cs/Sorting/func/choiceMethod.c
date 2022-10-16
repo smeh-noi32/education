@@ -18,5 +18,4 @@ int choiceMethod (){
         }
     }
     Method = atoi(stringTMP);
-    return arrType;
 }

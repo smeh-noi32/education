@@ -1,31 +1,41 @@
 #include "../Headers/arr.h"
 
-int enterARR () {
-    printf("Input N: ");
-    scanf_s("%d", &N);
-    int* mass;
-    mass = (int *)malloc(N * sizeof(int));
-    printf("Input the array elements:\n");
-    for (int i = 0; i < N; i++)
-        scanf_s("%d", &mass[i]);
-    //сортировка методом выбора
-    int minPosition, tmp;
- 
-    for (int i = 0; i < N; i++)
-    {
-        minPosition = i;
-        for (int j = i + 1; j < N; j++)
-            if (mass[minPosition] > mass[j])
-                minPosition = j;
-        tmp = mass[minPosition];
-        mass[minPosition] = mass[i];
-        mass[i] = tmp;
+void outArr (int *arrF, int vol) {
+    printf("array: [");
+    for (int i = 0; i < vol; i++) {
+        printf("%d", arrF[i]);
+        if (i < vol-1) 
+            printf(", ");
     }
+    printf("]\n");
+}
+
+int enterARR () {
+    int vol;
+    printf("Input N: ");
+    scanf("%d", &vol);
+    int* arrF;
+    arrF = (int *)malloc(vol * sizeof(int));
+    printf("Input the array elements:\n");
+    for (int i = 0; i < vol; i++){
+        scanf("%d", &arrF[i]);
+    }
+
+    system("cls");
+    outArr(arrF, vol);
+
+    choiceMethod ();
+
+    system("cls");
+    printf("Original ");
+    outArr(arrF, vol);
+
+    switchMethod (arrF, vol);
  
-    printf("Sorted array:\n");
-    for (int i = 0; i < N; i++)
-        printf("%d ", mass[i]);
-    printf("\n");
-    free(mass);
+    printf("Sorted ");
+    outArr(arrF, vol);
+    system("pause");
+
+    free(arrF);
     return 0;
 }
