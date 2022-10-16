@@ -1,6 +1,6 @@
 #include "../Headers/arr.h"
 
-int printArr () {    
+void printArr () {    
     for (int i = 0; i < arrCout; i++) {
         int stop = size[i];
         printf("arr%d: [", i);

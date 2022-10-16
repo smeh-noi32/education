@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "core.c"
+#include "./Headers/core.h"
 
 int main () {
     printf("%d\n", sqri(5));

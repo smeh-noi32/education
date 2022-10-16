@@ -1,3 +1,5 @@
-int sqri (int x){
+#include "../Headers/core.h"
+
+int sqri(int x){
     return x*x;
 }
