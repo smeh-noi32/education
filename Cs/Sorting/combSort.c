@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "./Headers/arr.h"
+#include "./Combined project/Headers/arr.h"
 
 int main () {
     
