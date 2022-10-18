@@ -3,6 +3,6 @@
 
 int sqri(int x) ;
 
-int b;
+#include "../Sources/core.c"
 
 #endif 
