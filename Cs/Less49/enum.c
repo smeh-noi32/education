@@ -6,13 +6,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 enum operations { add = '+', sub = '-', mult = '*', divi = '/'};
 typedef enum operations OP;
 
-int result;
+float result;
 
-int action ( int x, int y, OP oper) {
+float action ( float x, float y, OP oper) {
     switch (oper) {
     case add:
         result = x + y;
@@ -31,21 +32,22 @@ int action ( int x, int y, OP oper) {
 }
 
 int main() {
-    int a, b;
+    float a, b;
     char c[20];
-/*
-    printf("Enter a number 1: ");
-    scanf("%d", &a);
-    printf("Enter a mathematical operation ( '+', '-', '*', '/' ): ");
-    scanf("%s", c);
-    printf("Enter a number 2: ");
-    scanf("%d", &b);
-*/
+    bool quit = false;
 
     printf("Enter an expression, without spaces, using signs ( '+', '-', '*', '/' ).\nFor example: '2+2' or '3/3'\n");
-    scanf("%d%c%d", &a, c, &b);
+    printf("Enter '0e0' for quit\n");
 
-    printf("Result: %d\n", action(a, b, c[0]));
+    while (!quit) {
+        scanf("%g%c%g", &a, c, &b);
+        if (a == 0 || c[0] == 'q'|| b == 0){
+            quit = true;
+        }
+        else
+            printf("Result: %g\n", action(a, b, c[0]));
+    }
+
     system("pause");
     return 0;
 }
